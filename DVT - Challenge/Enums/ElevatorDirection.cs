@@ -7,7 +7,7 @@ namespace DVT___Challenge
     /// Enumeration that defines 3 possible states in which 
     /// an elevator can be.
     /// 
-    /// This is a basic implementation, following KISS Principle. 
+    /// This is a basic implementation, following KISS Principle. This is my "default" mode and first implementation when details are not all clear.
     ///
     /// Bellow I prezent an alternative and more advaced approach, that adhers better to OOP.
     /// </summary>
@@ -97,10 +97,10 @@ namespace DVT___Challenge
             _elevatorState = new Standing();
         }
 
-        public void CallElevator()
+        public void CallElevatorUp()
         {
             //I hope this  gives you an idea on how the code will change 
-            _elevatorState.CallElevatorUp(() => { /*some actions to executee*/ });
+            _elevatorState = _elevatorState.CallElevatorUp(() => { /*some actions to executed*/ });
         }
     }
 
