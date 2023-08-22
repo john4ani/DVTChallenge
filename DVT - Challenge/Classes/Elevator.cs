@@ -12,10 +12,10 @@ namespace DVT___Challenge.Classes
         private decimal _currentWeight = 0;        
         private int _index = 0;
         private int _currentNumberOfPeople = 0;
+        private int _currentFloorIndex = 0;
 
-        
-        private IElevatorState _state ;
-        private Floor _currentFloor;
+
+        private IElevatorState _state ;        
         private readonly IElevatorTakeOnPeopleStrategy _elevatorTakeOnPeopleStrategy;
 
         /// <summary>
@@ -24,9 +24,9 @@ namespace DVT___Challenge.Classes
         public IElevatorState State => _state;
 
         /// <summary>
-        /// Gets the current floor
+        /// Gets the current floor index
         /// </summary>
-        public IFloor CurrentFloor => _currentFloor;
+        public int CurrentFloorIndex => _currentFloorIndex;
 
         /// <summary>
         /// Default constructor
@@ -40,8 +40,7 @@ namespace DVT___Challenge.Classes
             _maxWeight = maxWeight;
             _elevatorTakeOnPeopleStrategy = elevatorTakeOnPeopleStrategy;
 
-            _state = new Standing();
-            _currentFloor = new Floor(0,new List<Person>());
+            _state = new Standing();            
         }
 
         /// <summary>
@@ -66,13 +65,19 @@ namespace DVT___Challenge.Classes
             _state = await _state.MoveElevatorAsync(async (int increment) => await MoveElevatorAsync(callingFloor,increment));
         }
 
+        /// <summary>
+        /// Internal functionality for Moving elevator
+        /// </summary>
+        /// <param name="callingFloor"></param>
+        /// <param name="movingIncrement"></param>
+        /// <returns></returns>
         private async Task MoveElevatorAsync(IFloor callingFloor, int movingIncrement)
         {
             await Task.Run(() =>
             {
-                while (_currentFloor.Index != callingFloor.Index)
+                while (_currentFloorIndex != callingFloor.Index)
                 {
-                    _currentFloor.Index += movingIncrement;
+                    _currentFloorIndex += movingIncrement;
 
                     //optional delay for realistic simulation
                     //Thread.Sleep(1000);

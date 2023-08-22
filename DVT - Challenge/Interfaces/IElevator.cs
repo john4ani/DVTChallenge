@@ -14,11 +14,22 @@ namespace DVT___Challenge.Interfaces
         public IElevatorState State { get; }
 
         /// <summary>
-        /// Gets the current floor
+        /// Gets the current floor index
         /// </summary>
-        public IFloor CurrentFloor { get; }
+        public int CurrentFloorIndex { get; }
 
+        /// <summary>
+        /// Call Elevator Up functionality
+        /// </summary>
+        /// <param name="callingFloor">Calling fllor</param>
+        /// <returns></returns>
         Task CallElevatorUpAsync(IFloor callingFloor);
+
+        /// <summary>
+        /// Call Elevator Down functionality
+        /// </summary>
+        /// <param name="callingFloor">Calling fllor</param>
+        /// <returns></returns>
         Task CallElevatorDownAsync(IFloor callingFloor);
 
         Task TakePeopleOff(List<Person> listOfPeople);

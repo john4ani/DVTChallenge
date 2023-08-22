@@ -23,6 +23,10 @@ namespace DVT___Challenge.Classes
         /// <returns></returns>
         public IElevator this[int index] => _elevatorsIndexElevatorMap.First(keyValue => keyValue.Key == index).Value;
 
+        /// <summary>
+        /// Get available elevators, the ones that are in Standing state
+        /// </summary>
+        /// <returns>New <see cref="Elevators"/> instance with list of available elevators only</returns>
         public Elevators GetAvailables() 
         {
             var temp = _elevatorsIndexElevatorMap
@@ -32,11 +36,16 @@ namespace DVT___Challenge.Classes
 
         }
 
+        /// <summary>
+        /// Get the nerest elevator
+        /// </summary>
+        /// <param name="floorIndex">Calling floor index</param>
+        /// <returns></returns>
         public KeyValuePair<int, IElevator> GetNearest(int floorIndex)
         {
             //get the nearest elevator based on floor distance 
             return _elevatorsIndexElevatorMap
-                .Aggregate((best, current) => Math.Abs(floorIndex - best.Value.CurrentFloor.Index) < Math.Abs(floorIndex - current.Value.CurrentFloor.Index) ? best : current);
+                .Aggregate((best, current) => Math.Abs(floorIndex - best.Value.CurrentFloorIndex) < Math.Abs(floorIndex - current.Value.CurrentFloorIndex) ? best : current);
         }
 
         /// <summary>

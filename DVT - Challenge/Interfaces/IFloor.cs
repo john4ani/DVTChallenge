@@ -12,6 +12,9 @@ namespace DVT___Challenge.Interfaces
         /// </summary>
         List<Person> People { get; }
         
+        /// <summary>
+        /// Fllors index
+        /// </summary>
         int Index { get; set; }
 
         /// <summary>
