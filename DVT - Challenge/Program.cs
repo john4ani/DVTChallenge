@@ -22,18 +22,17 @@ namespace DVT___Challenge
 
             var floorsMap = new Dictionary<int, IFloor> 
             {
-                {0, new Floor(new List<Person> { new Person(1,1),new Person(2,2), new Person(3,3)}) },
-                {1, new Floor(new List<Person> { new Person(1,1),new Person(2,3), new Person(3,3)}) },
-                {2, new Floor(new List<Person> { new Person(1, 3), new Person(2,2), new Person(3,3)}) },
+                {0, new Floor(0, new List<Person> { new Person(1,1),new Person(2,2), new Person(3,3)}) },
+                {1, new Floor(1, new List<Person> { new Person(1,1),new Person(2,3), new Person(3,3)}) },
+                {2, new Floor(2, new List<Person> { new Person(1, 3), new Person(2,2), new Person(3,3)}) },
             };
             
-            var commandCenter = new ElevatorsCommandCenter(elevatorsMap, floorsMap);
+            var commandCenter = new ElevatorsCommandCenter(new Elevators(elevatorsMap), floorsMap);
 
-            var nearestElevatorIndex = await commandCenter.CallElevatorOnFloorAsync(0, ElevatorDirection.MovingUp);
+            var nearestElevatorIndex = await commandCenter.CallElevatorUpAsync(0);
             await commandCenter.LoadPeopleIntoElevatorAsync(nearestElevatorIndex, 0);
             await commandCenter.ShowElevatorsStatusOnConsoleAsync();
 
-            await commandCenter.MoveElevatorAsync(nearestElevatorIndex, 2, true);
             await commandCenter.UnloadPeopleFromElevatorAsync(nearestElevatorIndex, new List<Person>
             {
                 new Person(1),
@@ -45,11 +44,11 @@ namespace DVT___Challenge
 
             Console.WriteLine();
 
-            nearestElevatorIndex = await commandCenter.CallElevatorOnFloorAsync(1, ElevatorDirection.MovingUp);
+            nearestElevatorIndex = await commandCenter.CallElevatorUpAsync(1);
             await commandCenter.LoadPeopleIntoElevatorAsync(nearestElevatorIndex, 1);
             await commandCenter.ShowElevatorsStatusOnConsoleAsync();
 
-            nearestElevatorIndex = await commandCenter.CallElevatorOnFloorAsync(2, ElevatorDirection.MovingDown);
+            nearestElevatorIndex = await commandCenter.CallElevatorDownAsync(2);
             await commandCenter.LoadPeopleIntoElevatorAsync(nearestElevatorIndex, 2);
             await commandCenter.ShowElevatorsStatusOnConsoleAsync();
 

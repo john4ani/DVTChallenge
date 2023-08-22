@@ -11,6 +11,8 @@ namespace DVT___Challenge.Interfaces
         /// Gets the list of ppeople on this floor
         /// </summary>
         List<Person> People { get; }
+        
+        int Index { get; set; }
 
         /// <summary>
         /// To be called when people were onborded from this floor

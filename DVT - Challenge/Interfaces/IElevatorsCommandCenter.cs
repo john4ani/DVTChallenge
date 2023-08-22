@@ -4,9 +4,9 @@ namespace DVT___Challenge.Interfaces
 {
     public interface IElevatorsCommandCenter
     {
-        Task<int> CallElevatorOnFloorAsync(int floorIndex, ElevatorDirection elevatorDirection);
+        Task<int> CallElevatorUpAsync(int floorIndex);
+        Task<int> CallElevatorDownAsync(int floorIndex);
         Task LoadPeopleIntoElevatorAsync(int elevatorIndex, int floorIndex);
-        Task MoveElevatorAsync(int elevatorIndex, int floorIndex, bool isCallingFloorFinalDestination = false);
         Task ShowElevatorsStatusOnConsoleAsync();
         Task UnloadPeopleFromElevatorAsync(int elevatorIndex, List<Person> people);
     }

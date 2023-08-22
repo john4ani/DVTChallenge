@@ -13,8 +13,9 @@ namespace DVT___Challenge.Classes
         /// Floor default constructor
         /// </summary>
         /// <param name="people">List of people on this floor</param>
-        public Floor(List<Person> people)
+        public Floor(int index, List<Person> people)
         {
+            Index = index;
             _people = people;
         }
 
@@ -22,6 +23,8 @@ namespace DVT___Challenge.Classes
         /// Gets the list of ppeople on this floor
         /// </summary>
         public List<Person> People { get { return _people; } }
+
+        public int Index { get; set; }
 
         /// <summary>
         /// To be called when people were onborded from this floor

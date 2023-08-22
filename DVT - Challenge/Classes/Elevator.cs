@@ -1,8 +1,5 @@
-﻿
-
-using DVT___Challenge.Extentions;
+﻿using DVT___Challenge.Classes.ElevatorStates;
 using DVT___Challenge.Interfaces;
-using System.ComponentModel.DataAnnotations;
 
 namespace DVT___Challenge.Classes
 {
@@ -12,23 +9,24 @@ namespace DVT___Challenge.Classes
     public class Elevator : IElevator
     {
         private decimal _maxWeight = 0;
-        private decimal _currentWeight = 0;
-        private int _currentFloor = 0;
+        private decimal _currentWeight = 0;        
         private int _index = 0;
         private int _currentNumberOfPeople = 0;
 
-        private ElevatorDirection _direction = ElevatorDirection.Standing;
+        
+        private IElevatorState _state ;
+        private Floor _currentFloor;
         private readonly IElevatorTakeOnPeopleStrategy _elevatorTakeOnPeopleStrategy;
 
         /// <summary>
-        /// Direction of moving for this elevator
+        /// The state of this elevator
         /// </summary>
-        public ElevatorDirection Direction => _direction;
+        public IElevatorState State => _state;
 
         /// <summary>
         /// Gets the current floor
         /// </summary>
-        public int CurrentFloor => _currentFloor;
+        public IFloor CurrentFloor => _currentFloor;
 
         /// <summary>
         /// Default constructor
@@ -41,24 +39,47 @@ namespace DVT___Challenge.Classes
             _index = index;
             _maxWeight = maxWeight;
             _elevatorTakeOnPeopleStrategy = elevatorTakeOnPeopleStrategy;
+
+            _state = new Standing();
+            _currentFloor = new Floor(0,new List<Person>());
         }
 
         /// <summary>
-        /// Calls the elevator
+        /// Calls the elevator up
         /// </summary>
         /// <param name="callingFloor">The floor number that is calling</param>
-        /// <param name="direction">Direction of call</param>
         /// <returns></returns>        
-        public async Task CallElevatorAsync(int callingFloor, ElevatorDirection direction)
+        public async Task CallElevatorUpAsync(IFloor callingFloor)
         {
-            if (_currentFloor == callingFloor)
-            {
-                _direction = ElevatorDirection.Standing;
-                return;
-            }            
+            _state = _state.CallElevatorUp();
+            _state = await _state.MoveElevatorAsync(async (int increment) => await MoveElevatorAsync(callingFloor, increment));
+        }        
 
-            _direction = direction;
-            await MoveElevatorAsync(callingFloor);
+        /// <summary>
+        /// Calls the elevator down
+        /// </summary>
+        /// <param name="callingFloor">The floor number that is calling</param>
+        /// <returns></returns>        
+        public async Task CallElevatorDownAsync(IFloor callingFloor)
+        {
+            _state = _state.CallElevatorDown();
+            _state = await _state.MoveElevatorAsync(async (int increment) => await MoveElevatorAsync(callingFloor,increment));
+        }
+
+        private async Task MoveElevatorAsync(IFloor callingFloor, int movingIncrement)
+        {
+            await Task.Run(() =>
+            {
+                while (_currentFloor.Index != callingFloor.Index)
+                {
+                    _currentFloor.Index += movingIncrement;
+
+                    //optional delay for realistic simulation
+                    //Thread.Sleep(1000);
+
+                    //Console.WriteLine(ToString());
+                }
+            });
         }
 
         /// <summary>
@@ -91,35 +112,7 @@ namespace DVT___Challenge.Classes
                 _currentNumberOfPeople -= listOfPeople.Count();
 
             });
-        }
-
-        /// <summary>
-        /// Private method which simulates moving elevator
-        /// </summary>
-        public async Task MoveElevatorAsync(int callingFloor, bool isCallingFloorFinalDestination = false)
-        {
-
-            var increment = callingFloor > _currentFloor ? 1 : -1;
-            _direction = increment == 1 ? ElevatorDirection.MovingUp : ElevatorDirection.MovingDown;
-
-            await Task.Run(() =>
-            {
-                while (_currentFloor != callingFloor)
-                {
-                    _currentFloor += increment;
-                    
-                    //optional delay for realistic simulation
-                    //Thread.Sleep(1000);
-                    
-                    Console.WriteLine(ToString());
-                }
-            }); 
-            
-            if(isCallingFloorFinalDestination)
-            {
-                _direction = ElevatorDirection.Standing;
-            }
-        }
+        }        
 
         /// <summary>
         /// Returns this eleveator as a string for printing
@@ -127,8 +120,7 @@ namespace DVT___Challenge.Classes
         /// <returns>String</returns>
         public override string ToString()
         {
-            var status = _direction.GetAttribute<DisplayAttribute>().Name;
-            return string.Format($"The elevator {_index} status is {status} and carrying {_currentNumberOfPeople} people.");
+            return string.Format($"The elevator {_index} status is {_state} and carrying {_currentNumberOfPeople} people.");
         }
     }
 

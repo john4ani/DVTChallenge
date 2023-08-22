@@ -9,12 +9,12 @@ namespace DVT___Challenge.Classes
     /// </summary>
     public class ElevatorsCommandCenter : IElevatorsCommandCenter
     {
-        private Dictionary<int, IElevator> _elevatorsIndexElevatorMap;
+        private Elevators _elevators;
         private Dictionary<int, IFloor> _floorsIndexFloorMap;
 
-        public ElevatorsCommandCenter(Dictionary<int, IElevator> elevatorsIndexElevatorMap, Dictionary<int, IFloor> floorsIndexFloorMap)
+        public ElevatorsCommandCenter(Elevators elevators, Dictionary<int, IFloor> floorsIndexFloorMap)
         {
-            _elevatorsIndexElevatorMap = elevatorsIndexElevatorMap;
+            _elevators = elevators;
             _floorsIndexFloorMap = floorsIndexFloorMap;
         }
 
@@ -22,31 +22,40 @@ namespace DVT___Challenge.Classes
         /// First requirment: "* show Elevator status, including which floor are they on...."
         /// </summary>
         public async Task ShowElevatorsStatusOnConsoleAsync()
+        {           
+             await _elevators.PrintToConsoleAsync();
+        }        
+
+        /// <summary>
+        /// Functionality for Call Up elevator
+        /// </summary>
+        /// <param name="floorIndex">Calling floor index</param>
+        /// <returns></returns>
+        public async Task<int> CallElevatorUpAsync(int floorIndex)
         {
-            await Task.Run(() =>
-            {
+            //get the nearest elevator based on floor distance 
+            var nearestElevator = _elevators
+                                    .GetAvailables()
+                                    .GetNearest(floorIndex);
 
-                foreach (var elevator in _elevatorsIndexElevatorMap.Values)
-                {
-                    Console.WriteLine(elevator.ToString());
-                }
-            });
+            await nearestElevator.Value.CallElevatorUpAsync(_floorsIndexFloorMap[floorIndex]);
 
+            return nearestElevator.Key;
         }
 
         /// <summary>
-        /// Second requirment: "* provide way to interact with elevators..."
+        /// Functionality for Call Down elevator
         /// </summary>
-        /// <param name="floorIndex">Floor index</param>
+        /// <param name="floorIndex">Calling floor index</param>
         /// <returns></returns>
-        public async Task<int> CallElevatorOnFloorAsync(int floorIndex, ElevatorDirection elevatorDirection)
+        public async Task<int> CallElevatorDownAsync(int floorIndex)
         {
             //get the nearest elevator based on floor distance 
-            var nearestElevator = _elevatorsIndexElevatorMap
-                .Where(e => e.Value.Direction == ElevatorDirection.Standing)
-                .Aggregate((best, current) => Math.Abs(floorIndex - best.Value.CurrentFloor) < Math.Abs(floorIndex - current.Value.CurrentFloor) ? best : current);                
+            var nearestElevator = _elevators
+                                    .GetAvailables()
+                                    .GetNearest(floorIndex);
 
-            await _elevatorsIndexElevatorMap[nearestElevator.Key].CallElevatorAsync(floorIndex, elevatorDirection);
+            await nearestElevator.Value.CallElevatorDownAsync(_floorsIndexFloorMap[floorIndex]);
 
             return nearestElevator.Key;
         }
@@ -59,22 +68,10 @@ namespace DVT___Challenge.Classes
         /// <returns></returns>
         public async Task LoadPeopleIntoElevatorAsync(int elevatorIndex, int floorIndex)
         {
-            var onboardedPeople = await _elevatorsIndexElevatorMap[elevatorIndex].TakePeopleOn(_floorsIndexFloorMap[floorIndex].People);
+            var onboardedPeople = await _elevators[elevatorIndex].TakePeopleOn(_floorsIndexFloorMap[floorIndex].People);
 
             await _floorsIndexFloorMap[floorIndex].OnPeopleOnboardedIntoElevatorAsync(onboardedPeople);
-        }
-
-        /// <summary>
-        /// Moves specific elevator to specific floor
-        /// </summary>
-        /// <param name="elevatorIndex">Elevator index</param>
-        /// <param name="floorIndex">Floor index</param>
-        /// <param name="isCallingFloorFinalDestination">True if the floor is the final destination</param>
-        /// <returns></returns>
-        public async Task MoveElevatorAsync(int elevatorIndex, int floorIndex, bool isCallingFloorFinalDestination = false)
-        {
-            await _elevatorsIndexElevatorMap[elevatorIndex].MoveElevatorAsync(floorIndex, isCallingFloorFinalDestination);
-        }
+        }        
 
         /// <summary>
         /// Unloads people from elevator
@@ -84,7 +81,7 @@ namespace DVT___Challenge.Classes
         /// <returns></returns>
         public async Task UnloadPeopleFromElevatorAsync(int elevatorIndex, List<Person> people)
         {
-            await _elevatorsIndexElevatorMap[elevatorIndex].TakePeopleOff(people);
+            await _elevators[elevatorIndex].TakePeopleOff(people);
         }
     }
 }
