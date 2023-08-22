@@ -52,7 +52,7 @@ namespace DVT___Challenge.Classes
             //find the nearest elevator
             foreach (var elevator in availableElevators)
             {
-                var floorsDistance = Math.Abs(floorIndex - elevator.Key);
+                var floorsDistance = Math.Abs(floorIndex - elevator.Value.CurrentFloor);
                 elevatorsIndexElevatorDistanceMap.Add(elevator.Key, floorsDistance);
 
                 if (nearestElevatorDistance > floorsDistance)

@@ -13,6 +13,11 @@ namespace DVT___Challenge.Interfaces
         ElevatorDirection Direction { get; }
 
         /// <summary>
+        /// Gets the current floor
+        /// </summary>
+        int CurrentFloor { get; }
+
+        /// <summary>
         /// Calls the elevator
         /// </summary>
         /// <param name="callingFloor">The floor number that is calling</param>

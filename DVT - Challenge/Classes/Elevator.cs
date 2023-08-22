@@ -23,7 +23,12 @@ namespace DVT___Challenge.Classes
         /// <summary>
         /// Direction of moving for this elevator
         /// </summary>
-        public ElevatorDirection Direction => _direction;        
+        public ElevatorDirection Direction => _direction;
+
+        /// <summary>
+        /// Gets the current floor
+        /// </summary>
+        public int CurrentFloor => _currentFloor;
 
         /// <summary>
         /// Default constructor

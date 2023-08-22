@@ -8,14 +8,14 @@ namespace DVT___Challenge
     {
         static async Task Main(string[] args)
         {
-            var firstComeFirstServeStrategy = new FirstComeFirstServedStrategy();
+            var firstComeFirstServedStrategy = new FirstComeFirstServedStrategy();
             var elevatorsMap = new Dictionary<int, IElevator> 
             {
-                { 0, new Elevator(0, 10, firstComeFirstServeStrategy) },
-                { 1, new Elevator(1, 10, firstComeFirstServeStrategy) },
-                { 2, new Elevator(2, 10, firstComeFirstServeStrategy) },
-                { 3, new Elevator(3, 10, firstComeFirstServeStrategy) },
-                { 4, new Elevator(4, 10, firstComeFirstServeStrategy) },
+                { 0, new Elevator(0, 10, firstComeFirstServedStrategy) },
+                { 1, new Elevator(1, 10, firstComeFirstServedStrategy) },
+                { 2, new Elevator(2, 10, firstComeFirstServedStrategy) },
+                { 3, new Elevator(3, 10, firstComeFirstServedStrategy) },
+                { 4, new Elevator(4, 10, firstComeFirstServedStrategy) },
             };
 
             
