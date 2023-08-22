@@ -40,28 +40,16 @@ namespace DVT___Challenge.Classes
         /// <param name="floorIndex">Floor index</param>
         /// <returns></returns>
         public async Task<int> CallElevatorOnFloorAsync(int floorIndex, ElevatorDirection elevatorDirection)
-        {
-            var nearestElevatorDistance = int.MaxValue;
-            var nearestElevatorIndex = -1;
+        {            
+            //get the naerest elevator based on floor distance 
+            var nearestElevator = _elevatorsIndexElevatorMap
+                .Where(e => e.Value.Direction == ElevatorDirection.Standing)
+                .OrderBy(e => Math.Abs(floorIndex - e.Value.CurrentFloor))
+                .First();
 
-            var availableElevators = _elevatorsIndexElevatorMap
-                .Where(e => e.Value.Direction == ElevatorDirection.Standing);            
+            await _elevatorsIndexElevatorMap[nearestElevator.Key].CallElevatorAsync(floorIndex, elevatorDirection);
 
-            //find the nearest elevator
-            foreach (var elevator in availableElevators)
-            {
-                var floorsDistance = Math.Abs(floorIndex - elevator.Value.CurrentFloor);
-                
-                if (nearestElevatorDistance > floorsDistance)
-                {
-                    nearestElevatorDistance = floorsDistance;
-                    nearestElevatorIndex = elevator.Key;
-                }
-            }
-
-            await _elevatorsIndexElevatorMap[nearestElevatorIndex].CallElevatorAsync(floorIndex, elevatorDirection);
-
-            return nearestElevatorIndex;
+            return nearestElevator.Key;
         }
 
         /// <summary>
